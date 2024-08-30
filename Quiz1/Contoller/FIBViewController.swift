@@ -29,12 +29,14 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
     var imageStore: ImageStore = ImageStore.shared
     var drawingCanvas: DrawingView?
     
+    var itemKey: String!
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         guard !questionItemStore.allItems.isEmpty else {
-            questionLabel.text = "No question, please add question"
+            questionLabel.text = "It's your turn! Add some questions"
             textField.isUserInteractionEnabled = false
             submitButton.isHidden = true
             NextButton.isHidden = true
@@ -49,18 +51,25 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
         submitButton.isEnabled = false // Disable submit button initially
         setupUI()
         
-        // Initialize drawingCanvas on canvasView to display
+        // Add tap gesture recognizer to the view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
+        
+        parentView.backgroundColor = UIColor.clear
+        
+        // Initialize and configure the drawing canvas if it's not nil
         drawingCanvas = DrawingView(frame: canvasView.bounds)
-        drawingCanvas?.backgroundColor = .white // Set canvas background color
+        if let drawingCanvas = drawingCanvas {
+            drawingCanvas.backgroundColor = .white // Set canvas background color
+            canvasView.addSubview(drawingCanvas)
+        }
         
-        // Configure other properties of the canvas view
-        canvasView.addSubview(drawingCanvas!)
-        
-        loadQuestionImage()
+        // Load lines for the current item key
+        drawingCanvas?.loadLinesFromUserDefaults(for: questionItemStore.allItems[currentQuestionIndex].itemKey)
+
         loadQuestion()
         NextButton.isHidden = false
-        
-        
+        loadQuestionImage()
         
         
         }
@@ -70,16 +79,11 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
         // Fetch the current QuestionItem from your data source based on the currentQuestionIndex
         let currentQuestionItem = questionItemStore.allItems[currentQuestionIndex].itemKey
         let imageToDisplay = imageStore.image(forkey: currentQuestionItem)
-        
-        let canvasToDisplay = drawingCanvas?.loadLinesFromUserDefaults(for: currentQuestionItem)
-          
-            print("Image to display: \(currentQuestionItem)")
-            print("Image to display: \(imageToDisplay)")
-            print("Canvas to display: \(canvasToDisplay)")
+
             
-            // Hide both canvas and image view initially
-            canvasView.isHidden = true
-            questionImageView.isHidden = true
+        // Hide both canvas and image view initially
+        canvasView.isHidden = true
+        questionImageView.isHidden = true
 
         // Within loadQuestionImage() or wherever you decide to handle this logic
         // Show image if available, otherwise check for canvas data
@@ -97,12 +101,6 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
                     canvasView.isHidden = true
                 }
             }
-
-        
-//        print("Image to display: \(currentQuestionItem)")
-//        print("Image to display: \(imageToDisplay)")
-//       
-//        questionImageView.image = imageToDisplay
         
         
         }
@@ -113,7 +111,7 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         guard !questionItemStore.allItems.isEmpty else {
-            questionLabel.text = "No question, please add question"
+            questionLabel.text = "It's your turn! Add some questions"
             textField.isUserInteractionEnabled = false
             submitButton.isHidden = true
             NextButton.isHidden = true
@@ -133,15 +131,20 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
         drawingCanvas = DrawingView(frame: canvasView.bounds)
         drawingCanvas?.backgroundColor = .white // Set canvas background color
         
+        // Load lines for the current item key
+            drawingCanvas?.loadLinesFromUserDefaults(for: questionItemStore.allItems[currentQuestionIndex].itemKey)
+        
+        
         // Configure other properties of the canvas view
         canvasView.addSubview(drawingCanvas!)
+        
         
     
     }
     func setupUI() {
             textField.delegate = self
-            textField.placeholder = "Enter your answer"
-            textField.textColor = .blue
+            textField.placeholder = "Your answer (numbers, periods, and dashes only)"
+            textField.textColor = UIColor(red: 0.42, green: 0.61, blue: 0.54, alpha: 1.00)
             textField.clearButtonMode = .always
             textField.isUserInteractionEnabled = true
         }
@@ -169,6 +172,8 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
             // Ensure the replacement string contains only allowed characters
             if replacementStringIsValid {
                 submitButton.isEnabled = !text.isEmpty
+                // Unhide submit button when text is not empty
+                submitButton.isHidden = text.isEmpty
                 return true
             } else {
                 return false
@@ -253,15 +258,14 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func nextQuestion(_ sender: Any) {
         var nextIndex = currentQuestionIndex + 1
-            
-        // Find the next unanswered question index or loop back to the first question
-        //while: ensures that the loop continues as long as the nextIndex doesn't return to the initial question.
+        
+        // Wrap around if nextIndex exceeds the bounds
+        if nextIndex >= questionItemStore.allItems.count {
+            nextIndex = 0
+        }
+
+        // Check each question once, starting from the next index
         while nextIndex != currentQuestionIndex {
-            if nextIndex >= questionItemStore.allItems.count {
-                nextIndex = 0
-            }
-            
-            
             if !questionItemStore.allItems[nextIndex].answeredStatus {
                 currentQuestionIndex = nextIndex
                 loadQuestion()
@@ -269,24 +273,14 @@ class FIBViewController: UIViewController, UITextFieldDelegate {
                 textField.text = "" // Clear the text field
                 return
             }
-            //make it loop back
             nextIndex += 1
             if nextIndex >= questionItemStore.allItems.count {
                 nextIndex = 0
             }
         }
-}
-    
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        // If loop completes, all questions have been answered
+        NextButton.isEnabled = false
     }
-    */
-
+    
 }

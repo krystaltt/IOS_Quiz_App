@@ -46,7 +46,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         //add action choices
         if UIImagePickerController.isSourceTypeAvailable(.camera){
             let cameraAction = UIAlertAction(title: "Camera", style: .default) {_ in
-                print("Present Camera")
+                
                 let imagePicker = self.imagePicker(for: .camera)
                 self.present(imagePicker, animated: true, completion: nil)
             }
@@ -55,7 +55,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         
         
         let photoLibraryAction = UIAlertAction(title: "Photo Library", style: .default) {_ in
-//            print("Present photo library")
+
             let imagePicker = self.imagePicker(for: .photoLibrary)
             imagePicker.modalPresentationStyle = .popover
             imagePicker.popoverPresentationController? .barButtonItem = sender
@@ -80,18 +80,38 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         
         questionField.delegate = self
         answerField.delegate = self
+        answerField.placeholder = "(numbers, periods, and dashes only)"
         
         //setting the canvas for the drawing
         drawingCanvas = DrawingView(frame: canvasView.bounds)
         drawingCanvas?.backgroundColor = .white
         canvasView.addSubview(drawingCanvas!)
         canvasView.isUserInteractionEnabled = true
-        print("Canvas is initialized")
+
 
         // Check for existing image and configure UI accordingly
         configureDrawingMode()
+
         
-        
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Check if the text field is the answerField
+        if textField == answerField {
+            // Define allowed characters: digits, decimal point, and minus sign
+            let allowedCharacters = CharacterSet(charactersIn: "0123456789.-")
+            let characterSetFromString = CharacterSet(charactersIn: string)
+            
+            // Ensure the input only contains allowed characters
+            if !allowedCharacters.isSuperset(of: characterSetFromString) {
+                return false
+            }
+            
+            return true
+        } else {
+            // For other text fields, allow any input
+            return true
+        }
     }
     
     //setting drawing function
@@ -101,7 +121,6 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
             imageView.image = existingImage
             isDrawingModeEnabled = false
             navigationItem.rightBarButtonItem?.isEnabled = false // Disable the "Draw" button
-            print("hide drawing button")
             drawingCanvas?.isHidden = true
             canvasView.isHidden = true // Hide the canvas view when an image exists
         } else {
@@ -109,7 +128,6 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
             isDrawingModeEnabled = true
             navigationItem.rightBarButtonItem?.isEnabled = true
             canvasView.isHidden = false // Show the canvas view when there's no image
-            print("configure: button enable")
         }
     }
 
@@ -137,7 +155,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         } else {
             // No existing canvas, create a new one
             drawingCanvas = DrawingView(frame: canvasView.bounds)
-            drawingCanvas?.backgroundColor = .white
+//            drawingCanvas?.backgroundColor = .white
             canvasView.addSubview(drawingCanvas!)
             
             // Show and enable the newly created canvas
@@ -169,10 +187,8 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         
         //retrieving the image from Imagestore
         let key = questionItem.itemKey
-        print("Item Key: \(key)") // Check if the key is valid
         //display the associated image
         let imageToDisplay = imageStore.image(forkey: key)
-        print("Retrieved Image: \(imageToDisplay)")
         imageView.image = imageToDisplay
         
         // Check if an image exists for the item key
@@ -278,21 +294,6 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UINavigationC
         
     }
     
-    
-    
-    
-    
-    
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

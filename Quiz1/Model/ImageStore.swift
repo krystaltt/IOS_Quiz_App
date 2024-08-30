@@ -18,7 +18,7 @@ class ImageStore {
     //saving image data to disk
     func setImage(_ image: UIImage, forkey key: String) {
         cache.setObject(image, forKey: key as NSString)
-        print("Image Set for Key: \(key)")
+
         
         //create full URL for image
         let url = imageURL(forKey: key)

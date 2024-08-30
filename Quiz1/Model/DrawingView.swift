@@ -84,7 +84,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("Touches began")
         let touch = touches.first!
         
         //get location of the touch in view's coordinate system
@@ -96,7 +95,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("Touches moved")
         let touch = touches.first!
         let location = touch.location(in: self)
         
@@ -107,7 +105,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if var line = currentLine {
-            print("Touches ends")
             let touch = touches.first!
             let location = touch.location(in: self)
             line.end = location
@@ -134,7 +131,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
             let encoder = JSONEncoder()
             let data = try encoder.encode(finishedLines)
             UserDefaults.standard.set(data, forKey: "LinesKey_\(itemKey)")
-            print("Finished lines data saved successfully for itemKey: \(itemKey)")
         } catch {
             print("Error encoding lines: \(error)")
         }
@@ -143,7 +139,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     func loadLinesFromUserDefaults(for itemKey: String) {
         if let data = UserDefaults.standard.data(forKey: "LinesKey_\(itemKey)") {
             do {
-                print("Loading drawing for itemKey: \(itemKey)")
                 let decoder = JSONDecoder()
                 let lines = try decoder.decode([Line].self, from: data)
                 finishedLines = lines
@@ -184,7 +179,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
         
         addGestureRecognizer(doubleTapRecognizer)
         
-        print("Double tap gesture recognizer added")
         
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(DrawingView.tap(_:)))
         tapRecognizer.delaysTouchesBegan = true
@@ -204,13 +198,11 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     }
     
     @objc func moveLine(_ gestureRecognizer: UIPanGestureRecognizer) {
-        print("Recognized a pan")
         
         //if a line is selected..
         if let index = selectedLineIndex {
             //when the pen recognizer changes its position..
             if gestureRecognizer.state == .changed {
-                print("moving")
                 //how far has the pen moved?
                 let translation = gestureRecognizer.translation(in: self)
                 
@@ -242,7 +234,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     }
     
     @objc func longPress(_ gestureRecognizer: UIGestureRecognizer) {
-        print("Recognizd long press")
         
         
         let point = gestureRecognizer.location(in: self)
@@ -261,15 +252,14 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
             }
         } else {
             // Long press on a blank area, show a menu to change pen color
-            print("click on blank")
             let menu = UIMenuController.shared
             becomeFirstResponder()
             let grayItem = UIMenuItem(title: "Gray", action: #selector(DrawingView.changePenColorToGray(_:)))
-            let blueItem = UIMenuItem(title: "Blue", action: #selector(DrawingView.changePenColorToBlue(_:)))
+            let redItem = UIMenuItem(title: "Red", action: #selector(DrawingView.changePenColorToRed(_:)))
             let orangeItem = UIMenuItem(title: "Orange", action: #selector(DrawingView.changePenColorToOrange(_:)))
             let yellowItem = UIMenuItem(title: "Yellow", action: #selector(DrawingView.changePenColorToYellow(_:)))
             
-            menu.menuItems = [grayItem, blueItem, orangeItem, yellowItem]
+            menu.menuItems = [grayItem, redItem, orangeItem, yellowItem]
             
             //tell the menu where it should come from and show it
             let targetRect = CGRect(x: point.x, y: point.y, width: 2, height: 2)
@@ -284,7 +274,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
 
     
     @objc func tap(_ gestureRecognizer: UIGestureRecognizer){
-        print("Recignized a tap")
         
         //hold the selected line
         let point = gestureRecognizer.location(in: self)
@@ -304,11 +293,11 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
             
             //change line color option
             let grayItem = UIMenuItem(title: "Gray", action: #selector(DrawingView.changeLineColorToGray(_:)))
-            let blueItem = UIMenuItem(title: "Blue", action: #selector(DrawingView.changeLineColorToBlue(_:)))
+            let redItem = UIMenuItem(title: "Red", action: #selector(DrawingView.changeLineColorToRed(_:)))
             let orangeItem = UIMenuItem(title: "Orange", action: #selector(DrawingView.changeLineColorToOrange(_:)))
             let yellowItem = UIMenuItem(title: "Yellow", action: #selector(DrawingView.changeLineColorToYellow(_:)))
             
-            menu.menuItems = [deleteItem, grayItem, blueItem, orangeItem, yellowItem]
+            menu.menuItems = [deleteItem, grayItem, redItem, orangeItem, yellowItem]
             
             
             //tell the menu where it should come from and show it
@@ -323,9 +312,9 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
         setNeedsDisplay()
     }
       
-    @objc func changeLineColorToBlue(_ sender: UIMenuController) {
+    @objc func changeLineColorToRed(_ sender: UIMenuController) {
         if let index = selectedLineIndex {
-            var color: UIColor = .blue
+            var color: UIColor = .red
             finishedLines[index].lineColor = color
             setNeedsDisplay()
         }
@@ -362,20 +351,16 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
     
     @objc func changePenColorToGray(_ sender: UIMenuController) {
         penColor = .gray
-        print("change to gray")
     }
     
-    @objc func changePenColorToBlue(_ sender: UIMenuController) {
-        penColor = .blue
-        print("change to blue")
+    @objc func changePenColorToRed(_ sender: UIMenuController) {
+        penColor = .red
     }
     @objc func changePenColorToOrange(_ sender: UIMenuController) {
         penColor = .orange
-        print("change to orange")
     }
     @objc func changePenColorToYellow(_ sender: UIMenuController) {
         penColor = .yellow
-        print("change to gray")
     }
     
     
@@ -392,7 +377,6 @@ class DrawingView: UIView, UIGestureRecognizerDelegate {
 
     
     @objc func doubleTap(_ gestureRecognizer: UIGestureRecognizer) {
-        print("Recognized a double tap")
         
         //double check if the user wanna cler all lines using alert
         let alertController = UIAlertController(title: "Clear All Lines", message: "Are you sure you want to clear all lines?", preferredStyle: .alert)

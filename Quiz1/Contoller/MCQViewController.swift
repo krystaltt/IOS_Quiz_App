@@ -60,6 +60,15 @@ class MCQViewController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             submitButton.isEnabled = true
         }
     
+    // MARK: - UIPickerViewDelegate method for customizing row appearance
+    @objc func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let title = answers[currentQuestionIndex][row]
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor(red: 0.72, green: 0.81, blue: 0.80, alpha: 1.00)
+        ]
+        return NSAttributedString(string: title, attributes: attributes)
+    }
+    
     
     @IBAction func submitButtonTapped(_ sender: UIButton) {
         let selectedRow = pickerView.selectedRow(inComponent: 0)
@@ -157,15 +166,5 @@ class MCQViewController: UIViewController, UIPickerViewDataSource, UIPickerViewD
             nextIndex += 1
         }
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
