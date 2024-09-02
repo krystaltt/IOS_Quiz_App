@@ -1,7 +1,5 @@
 # Quiz App (IOS)
 
-## About This App
-
 This quiz app provides a fun and interactive way for users to test their knowledge through two types of questions: **Multiple Choice** and **Fill in the Blank**. The Multiple Choice questions are pre-made by the app, covering a wide range of topics and difficulty levels. In the Fill in the Blank mode, users can create their own questions within the app's settings, complete with the option to add images or drawings. For consistency, the answers in this mode are restricted to specific formats—numbers, commas, and dashes. All settings and customizations are automatically saved whenever the app is closed, ensuring that users can pick up right where they left off.
 
 ### Functionality: Multiple Choice
@@ -23,6 +21,8 @@ The **Score** section provides an automatic tally of all questions answered acro
 ### Conclusion
 
 With its customizable questions, dynamic scoring, and interactive features, this quiz app provides an engaging and personalized learning experience for users of all ages. Whether you're looking to challenge yourself with pre-set multiple-choice questions or create your own fill-in-the-blank quizzes, this app has something for everyone. Dive in, test your knowledge, and enjoy a fun, educational journey!
+
+---
 
 #### How to Run This App
 
