@@ -4,15 +4,17 @@ This quiz app provides a fun and interactive way for users to test their knowled
 
 ### Functionality: Multiple Choice
 <div style="display: flex; justify-content: space-between;">
-  <img src="images/mcq.png" alt="multiple choice" style="width: 23%;"/>
-  <img src="images/mcq_correct.png" alt="mcq_with correct mark" style="width: 23%;"/>
-  <img src="images/mcq_incorrect.png" alt="mcq_with incorrect mark" style="width: 23%;"/>
+  <img src="images/mcq.png" alt="multiple choice" style="width: 20%;"/>
+  <img src="images/mcq_corrrect.png" alt="mcq_with correct mark" style="width: 20%;"/>
+  <img src="images/mcq_incorrect.png" alt="mcq_with incorrect mark" style="width: 20%;"/>
 </div>
 In the **Multiple Choice** section, users can answer pre-set questions from the system using an intuitive picker interface. This design ensures a smooth user experience by displaying a "Submit" button only after a selection is made, reducing the risk of accidentally submitting an answer without careful consideration. Additionally, a "Next" button in the top-right corner allows users to easily navigate through the remaining questions, offering flexibility in how they approach the quiz. Once an answer is submitted, the app immediately provides feedback on the screen, indicating whether the selected answer is correct or incorrect. This instant response helps users gauge their performance and learn in real-time.
 
 ### Functionality: Fill in the Blank
 <div style="display: flex; justify-content: space-between;">
-  <img src="images/fibq.png" alt="fill in the blank question(empty)" style="width: 23%;"/>
+  <img src="images/fibq.png" alt="fill in the blank question(empty)" style="width: 20%;"/>
+  <img src="images/fibq_drawing.png" alt="fill in the blank question(drawing)" style="width: 20%;"/>
+  <img src="images/fibq_picture.png" alt="fill in the blank question(picture)" style="width: 20%;"/>
 </div>
 The **Fill in the Blank** section starts without any preset questions, allowing users to fully customize this mode by adding their own questions in the app's settings. Similar to the Multiple Choice section, a "Next" button is available in the top-right corner, enabling users to navigate through their custom questions with ease. To ensure consistency and clarity, the input field for answers is restricted to accept only numbers, commas, and dashes. This limitation is clearly communicated to users through placeholders in the text field, reminding them of the input format required for this section.
 
